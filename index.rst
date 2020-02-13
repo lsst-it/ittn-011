@@ -68,11 +68,16 @@ core1 hypervisor host
    $ curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
    $ sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
 
-
-install OS
+Install OS
 ^^^^^^^^^^
 
-Install centos from usb thumbdrive.
+Install Centos from USB thumbdrive.
+
+1. Partitioning: use default partition table.
+2. Network: set hostname to core1.<domain>
+3. Timezone: Etc/UTC (Will be managed by Puppet when the core cluster is live.)
+4. Root password: see the password vault for the root password. (Will be managed
+   by Puppet when the core cluster is live.)
 
 .. TODO develope kickstart file which can be used to consistently re-recreate
    the core 1 hypervisor.
