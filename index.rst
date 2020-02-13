@@ -15,6 +15,33 @@ Introduction
 
 .. TODO
 
+This document was originally populated based on the Tucson core deployment, and
+was fully expanded and verified in the Base DC deployment.
+
+Requirements
+============
+
+Networking
+^^^^^^^^^^
+
+The following networks are required:
+
+- A subnet where network services (IPA, DHCP, DNS) will be provisioned. This
+  subnet should be assigned a range where reverse DNS records can be managed.
+
+  .. note::
+     At this time we're using Route53 to provide DNS for Cerro Pachon and
+     La Serena. Because we have users connecting to the site via VPN and
+     frequently use DNS servers from their home institutions, using publicly
+     routable addresses and public DNS avoids a number of issues with resolution
+     and reachability for those users.
+
+The following networks are are preferred but not required:
+
+- A subnet for in band host management interfaces. Reverse DNS records will
+  also be created for these hosts.
+- A subnet for out of band host management (e.g. IPMI, iDRAC, BMC, etc).
+
 Hosts
 =====
 
