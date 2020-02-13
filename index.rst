@@ -88,8 +88,17 @@ hypervisor itself.  The second interface (or bond) (E.g. ``em2``) is used to
 pass vlans directly to VMs.  Unintentional filtering should be avoided on this
 interface.
 
-configure networking
+Configure networking
 ^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: console
+   # nmcli con edit em1
+   > set ipv4.addresses 139.229.135.2/24
+   > set ipv4.dns 139.229.136.35
+   > set ipv4.gateway 139.229.135.254
+   > save
+   > activate
+   > exit
 
 .. code-block:: yaml
 
