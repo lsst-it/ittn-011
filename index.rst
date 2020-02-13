@@ -21,6 +21,13 @@ Hosts
 core1 hypervisor host
 ---------------------
 
+.. Example given to indicate which version of CentOS we're deploying from.
+
+.. code-block:: console
+   $ curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+   $ sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
+
+
 install OS
 ^^^^^^^^^^
 
