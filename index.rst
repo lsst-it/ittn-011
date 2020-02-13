@@ -45,6 +45,20 @@ The following networks are are preferred but not required:
 Hosts
 =====
 
+Prepare host hardware
+^^^^^^^^^^^^^^^^^^^^^
+
+Boot up all core nodes and perform the following configuration changes.
+
+1. BIOS settings -> Security settings -> Power recovery -> ON.
+   .. note::
+      It is absolutely essential that core nodes boot on power restore, as
+      these systems will provide the services needed to interact with OOB
+      management on other hosts. We commonly apply this same configuration
+      to all servers but this is a convention.
+2. BIOS settings -> Miscellaneous settings -> F1/F2 on error -> disable.
+3. Device settings -> PERC -> Create a mirrored RAID array. Prefer 1TB or smaller drives.
+
 core1 hypervisor host
 ---------------------
 
