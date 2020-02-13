@@ -104,6 +104,10 @@ configure networking
 disable selinux
 ^^^^^^^^^^^^^^^
 
+.. code-block:: console
+   # sed -ie '/SELINUX=/s/=.*/=disabled/'
+   # reboot
+
 disable iptables
 ^^^^^^^^^^^^^^^^
 
