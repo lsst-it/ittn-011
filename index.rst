@@ -348,6 +348,7 @@ Tucson:
 Cerro Pachon:
 
 .. code-block:: bash
+
   foreman-installer \
     --enable-foreman-cli \
     --enable-foreman-proxy \
@@ -359,6 +360,37 @@ Cerro Pachon:
     --enable-foreman-plugin-remote-execution \
     --enable-foreman-plugin-dhcp-browser \
     --enable-foreman-proxy-plugin-remote-execution-ssh
+
+BDC:
+
+.. code-block:: bash
+
+   FOREMAN_IP="139.229.135.5"
+   DHCP_RANGE="139.229.135.192 139.229.135.253"
+   DHCP_GATEWAY="139.229.135.254"
+   DHCP_NAMESERVERS="139.229.136.35"
+   DNS_ZONE="ls.lsst.org"
+   DNS_REVERSE_ZONE="135.229.139.in-addr.arpa"
+   foreman-installer \
+     --enable-foreman-cli  \
+     --enable-foreman-proxy \
+     --foreman-proxy-tftp=true \
+     --foreman-proxy-tftp-servername="${FOREMAN_IP}" \
+     --foreman-proxy-dhcp=true \
+     --foreman-proxy-dhcp-interface=eth1 \
+     --foreman-proxy-dhcp-gateway="${DHCP_GATEWAY}" \
+     --foreman-proxy-dhcp-nameservers="${DNS_REVERSE_ZONE}" \
+     --foreman-proxy-dhcp-range="10.0.100.50 10.0.100.60" \
+     --foreman-proxy-dns=true \
+     --foreman-proxy-dns-interface=eth0 \
+     --foreman-proxy-dns-zone=tuc.lsst.cloud \
+     --foreman-proxy-dns-reverse=100.0.10.in-addr.arpa \
+     --foreman-proxy-dns-forwarders=140.252.32.21 \
+     --foreman-proxy-foreman-base-url=https://foreman.tuc.lsst.cloud \
+     --enable-foreman-plugin-remote-execution \
+     --enable-foreman-plugin-dhcp-browser \
+     --enable-foreman-proxy-plugin-remote-execution-ssh
+
 
 multi-homed network setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^
