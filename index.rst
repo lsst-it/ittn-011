@@ -534,22 +534,22 @@ setup foreman libvirt integration with core1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
-
+##Should be puppetize in the near future
 .. code-block:: yaml
 
-  yum install -y yum-utils augeas
-  yum install -y foreman-libvirt
-
-  su foreman -s /bin/bash
-  ssh-keygen ....
-
-  # on target libvirt host
-
+  ##On target libvirt host (core1)
   [root@core1 ~]# useradd -r -m foreman
   [root@core1 ~]# su - foreman
   [foreman@core1 ~]$ mkdir .ssh
   [foreman@core1 ~]$ chmod 700 .ssh
-  [foreman@core1 .ssh]$ vi authorized_keys
+  
+  ##On Foreman instance
+  yum install -y yum-utils augeas foreman-libvirt
+  su foreman -s /bin/bash
+  ssh-keygen
+  scp -l root /usr/share/foreman/.ssh/id_rsa.pub root@core1.ls.lsst.org:/home/foreman/.ssh/authorized_keys
+
+  #Again on target libvirt host (core1)
   [foreman@core1 .ssh]$ chmod 600 authorized_keys
 
   # ensure polkit is being used for auth
@@ -568,6 +568,7 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
           return polkit.Result.YES;
       }
   });
+
   END
 
   systemctl restart libvirtd
@@ -586,6 +587,7 @@ boot strap puppet agent on core1
 
 .. code-block:: yaml
 
+  ##At core1
   sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
   sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   sudo yum -y install puppet-agent
@@ -602,10 +604,11 @@ boot strap puppet agent on core1
   [agent]
   report          = true
   ignoreschedules = true
-  ca_server       = foreman.tuc.lsst.cloud
+  ca_server       = foreman.ls.lsst.org
   certname        = $(hostname -f)
   environment     = production
-  server          = foreman.tuc.lsst.cloud
+  server          = foreman.ls.lsst.org
+
   END
 
 foreman config for core1
