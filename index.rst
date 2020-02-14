@@ -535,6 +535,7 @@ setup foreman libvirt integration with core1
 
 See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
 ##Should be puppetize in the near future
+
 .. code-block:: yaml
 
   ##On target libvirt host (core1)
