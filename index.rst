@@ -289,14 +289,27 @@ Create foreman/puppet VM
      --network bridge=br${VLAN} \
      --location=/tmp/CentOS-7-x86_64-Minimal-1908.iso
 
-foreman/puppet VM
+Foreman/puppet VM
 -----------------
 
-disable selinux
+Disable SELinux
 ^^^^^^^^^^^^^^^
 
-disable iptables
+.. code-block:: bash
+
+   sed -ie '/SELINUX=/s/=.*/=disabled/' /etc/selinux/config
+   # Perform a fast reboot - don't reinitialize the hardware.
+   systemctl kexec
+
+Disable iptables
 ^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   yum install -y iptables-services
+   systemctl stop iptables
+   systemctl disable iptables
+   iptables -F
 
 install foreman
 ^^^^^^^^^^^^^^^
