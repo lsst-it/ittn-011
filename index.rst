@@ -70,8 +70,8 @@ core1 hypervisor host
    curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
    sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
 
-Install OS
-^^^^^^^^^^
+Install OS on core1
+^^^^^^^^^^^^^^^^^^^
 
 Install Centos from USB thumbdrive.
 
