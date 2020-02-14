@@ -278,31 +278,37 @@ install foreman
 
 .. code-block:: yaml
 
-  sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
-  sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  sudo yum -y install https://yum.theforeman.org/releases/1.23/el7/x86_64/foreman-release.rpm
-  sudo yum -y install foreman-installer
+   sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
+   sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+   sudo yum -y install https://yum.theforeman.org/releases/1.23/el7/x86_64/foreman-release.rpm
+   sudo yum -y install foreman-installer
 
-  foreman-installer \
-    --enable-foreman-cli  \
-    --enable-foreman-proxy \
-    --foreman-proxy-tftp=true \
-    --foreman-proxy-tftp-servername=140.252.32.218 \
-    --foreman-proxy-dhcp=true \
-    --foreman-proxy-dhcp-interface=eth1 \
-    --foreman-proxy-dhcp-gateway=10.0.100.1 \
-    --foreman-proxy-dhcp-nameservers="140.252.32.218" \
-    --foreman-proxy-dhcp-range="10.0.100.50 10.0.100.60" \
-    --foreman-proxy-dns=true \
-    --foreman-proxy-dns-interface=eth0 \
-    --foreman-proxy-dns-zone=tuc.lsst.cloud \
-    --foreman-proxy-dns-reverse=100.0.10.in-addr.arpa \
-    --foreman-proxy-dns-forwarders=140.252.32.21 \
-    --foreman-proxy-foreman-base-url=https://foreman.tuc.lsst.cloud \
-    --enable-foreman-plugin-remote-execution \
-    --enable-foreman-plugin-dhcp-browser \
-    --enable-foreman-proxy-plugin-remote-execution-ssh
+Tucson:
 
+.. code-block:: bash
+   foreman-installer \
+     --enable-foreman-cli  \
+     --enable-foreman-proxy \
+     --foreman-proxy-tftp=true \
+     --foreman-proxy-tftp-servername=140.252.32.218 \
+     --foreman-proxy-dhcp=true \
+     --foreman-proxy-dhcp-interface=eth1 \
+     --foreman-proxy-dhcp-gateway=10.0.100.1 \
+     --foreman-proxy-dhcp-nameservers="140.252.32.218" \
+     --foreman-proxy-dhcp-range="10.0.100.50 10.0.100.60" \
+     --foreman-proxy-dns=true \
+     --foreman-proxy-dns-interface=eth0 \
+     --foreman-proxy-dns-zone=tuc.lsst.cloud \
+     --foreman-proxy-dns-reverse=100.0.10.in-addr.arpa \
+     --foreman-proxy-dns-forwarders=140.252.32.21 \
+     --foreman-proxy-foreman-base-url=https://foreman.tuc.lsst.cloud \
+     --enable-foreman-plugin-remote-execution \
+     --enable-foreman-plugin-dhcp-browser \
+     --enable-foreman-proxy-plugin-remote-execution-ssh
+
+Cerro Pachon:
+
+.. code-block:: bash
   foreman-installer \
     --enable-foreman-cli \
     --enable-foreman-proxy \
