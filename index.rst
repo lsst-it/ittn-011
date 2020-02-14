@@ -543,7 +543,7 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
   [root@core1 ~]# su - foreman
   [foreman@core1 ~]$ mkdir .ssh
   [foreman@core1 ~]$ chmod 700 .ssh
-  
+
   ##On Foreman instance
   yum install -y yum-utils augeas foreman-libvirt
   su foreman -s /bin/bash
@@ -759,16 +759,21 @@ hosts and hostgroups.
    autopart <%= host_param('autopart_options') %>
    END
 
-
-Configure the Foreman site and organization.
+Global parameters
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
+   # Configure the Foreman site and organization.
    hammer global-parameter set --name org --parameter-type string --value lsst
    hammer global-parameter set --name site --parameter-type string --value ls
+   # Configure the Foreman site and organization.
+   hammer global-parameter set --name enable-puppetlabs-puppet6-repo --parameter-type boolean --value true
 
+Hostgroups
+^^^^^^^^^^
 
-Create hostgroups for the entire site (e.g. ``ls``)and the core group (e.g.
+Create hostgroups for the entire site (e.g. ``ls``) and the core group (e.g.
 ``ls/corels``). The group for the entire site is needed to set reasonable
 provisioning defaults.
 
@@ -791,3 +796,13 @@ provisioning defaults.
       --medium "CentOS mirror" \
       --partition-table "Kickstart sda only" \
       --group-parameters-attributes '[{"name": "cluster", "value": "corecp", "parameter_type": "string"}]'
+
+Host classification
+^^^^^^^^^^^^^^^^^^^
+
+Reclassify the foreman and core nodes.
+
+.. code-block:: bash
+
+   hammer host update --name foreman.ls.lsst.org --parameters role=foreman
+   hammer host update --name core1.ls.lsst.org --parameters role=hypervisor
