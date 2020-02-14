@@ -64,9 +64,9 @@ core1 hypervisor host
 
 .. Example given to indicate which version of CentOS we're deploying from.
 
-.. code-block:: console
-   $ curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
-   $ sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
+.. code-block:: bash
+   curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+   sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
 
 Install OS
 ^^^^^^^^^^
@@ -91,17 +91,16 @@ interface.
 Configure networking
 ^^^^^^^^^^^^^^^^^^^^
 
+.. code-block:: bash
+   nmcli con edit em1
+   set ipv4.addresses 139.229.135.2/24
+   set ipv4.dns 139.229.136.35
+   set ipv4.gateway 139.229.135.254
+   save
+   activate
+   exit
+
 .. code-block:: console
-   # nmcli con edit em1
-   > set ipv4.addresses 139.229.135.2/24
-   > set ipv4.dns 139.229.136.35
-   > set ipv4.gateway 139.229.135.254
-   > save
-   > activate
-   > exit
-
-.. code-block:: yaml
-
   [jhoblitt@core1 network-scripts]$ ls -1 ifcfg-*
   ifcfg-br32
   ifcfg-br700
@@ -156,17 +155,16 @@ Configure networking
   PEERDNS="no"
   PEERNTP="no"
 
-disable selinux
+Disable SELinux
 ^^^^^^^^^^^^^^^
 
-.. code-block:: console
-   # sed -ie '/SELINUX=/s/=.*/=disabled/'
-   # reboot
+.. code-block:: bash
+   sed -ie '/SELINUX=/s/=.*/=disabled/' /etc/selinux/config
 
-disable iptables
+Disable iptables
 ^^^^^^^^^^^^^^^^
 
-.. code-block:: yaml
+.. code-block:: bash
 
   yum install -y iptables-services
   systemctl stop iptables
@@ -193,8 +191,7 @@ create a dedicated volume for VM images
 
   mkfs.xfs /dev/data/vms
 
-  echo "/dev/mapper/data-vms  /vm                     xfs     defaults        0 0
-  " >> /etc/fstab
+  echo "/dev/mapper/data-vms  /vm                     xfs     defaults        0 0" >> /etc/fstab
   mkdir /vm
   mount /vm
 
@@ -208,7 +205,7 @@ install libvirt + extra tools
 .. TODO figure out how to install with VNC instead of SPICE console to play
    nice[r] with foreman console redirection
 
-.. code-block:: yaml
+.. code-block:: bash
 
   yum install -y libvirt qemu-kvm
   yum install -y qemu-guest-agent qemu-kvm-tools virt-top virt-viewer libguestfs virt-who virt-what virt-install virt-manager
@@ -242,7 +239,7 @@ install libvirt + extra tools
 create foreman/puppet VM
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: yaml
+.. code-block:: bash
 
   curl -O http://centos-distro.1gservers.com/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
 
