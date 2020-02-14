@@ -91,14 +91,23 @@ interface.
 Configure networking
 ^^^^^^^^^^^^^^^^^^^^
 
+Configure the host management interface.
+
 .. code-block:: bash
    nmcli con edit em1
+   set connection.autoconnect yes
    set ipv4.addresses 139.229.135.2/24
    set ipv4.dns 139.229.136.35
    set ipv4.gateway 139.229.135.254
    save
    activate
    exit
+
+Configure the hypervisor interface as a trunk. VMs will be attached to subinterfaces.
+
+.. code-block:: bash
+   nmcli con modify p2p1 connection.autoconnect yes
+   nmcli con add save yes type vlan dev p2p1 id 1800 con-name p2p1.1800
 
 .. code-block:: console
   [jhoblitt@core1 network-scripts]$ ls -1 ifcfg-*
