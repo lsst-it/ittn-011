@@ -315,10 +315,10 @@ install foreman
 ^^^^^^^^^^^^^^^
 
 .. code-block:: bash
-
+   FOREMAN_VERSION="1.24"
    sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
    sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-   sudo yum -y install https://yum.theforeman.org/releases/1.23/el7/x86_64/foreman-release.rpm
+   sudo yum -y install https://yum.theforeman.org/releases/"${FOREMAN_VERSION}"/el7/x86_64/foreman-release.rpm
    sudo yum -y install foreman-installer
 
 Tucson:
@@ -371,22 +371,24 @@ BDC:
    DHCP_NAMESERVERS="139.229.136.35"
    DNS_ZONE="ls.lsst.org"
    DNS_REVERSE_ZONE="135.229.139.in-addr.arpa"
+   DNS_FORWARDERS="139.229.136.35"
+   FOREMAN_URL="https://foreman.ls.lsst.org"
    foreman-installer \
      --enable-foreman-cli  \
      --enable-foreman-proxy \
      --foreman-proxy-tftp=true \
      --foreman-proxy-tftp-servername="${FOREMAN_IP}" \
      --foreman-proxy-dhcp=true \
-     --foreman-proxy-dhcp-interface=eth1 \
+     --foreman-proxy-dhcp-interface=eth0 \
      --foreman-proxy-dhcp-gateway="${DHCP_GATEWAY}" \
-     --foreman-proxy-dhcp-nameservers="${DNS_REVERSE_ZONE}" \
-     --foreman-proxy-dhcp-range="10.0.100.50 10.0.100.60" \
+     --foreman-proxy-dhcp-nameservers="${DHCP_NAMESERVERS}" \
+     --foreman-proxy-dhcp-range="${DHCP_RANGE}" \
      --foreman-proxy-dns=true \
      --foreman-proxy-dns-interface=eth0 \
-     --foreman-proxy-dns-zone=tuc.lsst.cloud \
-     --foreman-proxy-dns-reverse=100.0.10.in-addr.arpa \
-     --foreman-proxy-dns-forwarders=140.252.32.21 \
-     --foreman-proxy-foreman-base-url=https://foreman.tuc.lsst.cloud \
+     --foreman-proxy-dns-zone="${DNS_ZONE}" \
+     --foreman-proxy-dns-reverse="${DNS_REVERSE_ZONE}" \
+     --foreman-proxy-dns-forwarders="${DNS_FORWARDERS}" \
+     --foreman-proxy-foreman-base-url="${FOREMAN_URL}" \
      --enable-foreman-plugin-remote-execution \
      --enable-foreman-plugin-dhcp-browser \
      --enable-foreman-proxy-plugin-remote-execution-ssh
