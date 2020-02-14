@@ -642,17 +642,13 @@ Install and configure r10k
 
 .. code-block:: yaml
 
+  # git is a r10k dep -- make sure it is installed.
   sudo yum install -y git
   scl enable rh-ruby25 bash
   gem install r10k
   ln -s /opt/rh/rh-ruby25/root/usr/local/bin/r10k /usr/bin/r10k
   /opt/puppetlabs/puppet/bin/gem install r10k
   ln -sf /opt/puppetlabs/puppet/bin/r10k /usr/bin/r10k
-
-r10k config
-^^^^^^^^^^^
-
-XXX put `r10k.yaml` some place it can be `curl`'d.
 
 .. code-block:: yaml
 
@@ -684,7 +680,6 @@ https://github.com/lsst-it/lsst-puppet-hiera-private/settings/keys
 
 
 __Do not allow write access.__
-
 
 Run r10k to populate the Puppet code, and then import all environments into Foreman.
 
