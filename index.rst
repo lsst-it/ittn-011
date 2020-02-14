@@ -117,14 +117,16 @@ Configure the hypervisor interface as a trunk. VMs will be attached to subinterf
 Create a bridge for VMs on VLAN 1800.
 
 .. code-block:: bash
-   nmcli conn add save yes type bridge ifname br1800 con-name br1800 \
+   VLAN=1800
+   nmcli conn add save yes type bridge ifname br${VLAN} con-name br${VLAN} \
       connection.autoconnect yes ipv4.method disabled ipv6.method ignore
 
-Attach the VLAN 1800 subinterfaces to the bridge.
+Attach the VLAN ${VLAN} subinterfaces to the bridge.
 
 .. code-block:: bash
-   nmcli con add save yes type vlan dev p2p1 id 1800 con-name p2p1.1800 \
-      connection.slave-type bridge connection.master br1800 connection.autoconnect yes \
+   VLAN=1800
+   nmcli con add save yes type vlan dev p2p1 id ${VLAN} con-name p2p1.${VLAN} \
+      connection.slave-type bridge connection.master br${VLAN} connection.autoconnect yes \
 
 The resulting ifcfg scripts should resemble the following:
 
