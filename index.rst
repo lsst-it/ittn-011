@@ -708,3 +708,12 @@ Run r10k to populate the Puppet code, and then import all environments into Fore
 
   r10k deploy environment -ptv
   hammer proxy import-classes --id 1
+
+Foreman configuration
+=====================
+
+Configure the Foreman site and organization.
+
+.. code-block:: bash
+   hammer global-parameter set --name org --parameter-type string --value lsst
+   hammer global-parameter set --name site --parameter-type string --value ls
