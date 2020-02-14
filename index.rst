@@ -171,10 +171,10 @@ Disable iptables
   systemctl disable iptables
   iptables -F
 
-create a dedicated volume for VM images
+Create a dedicated volume for VM images
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: yaml
+.. code-block:: bash
 
   DEV=nvme0n1
   VOL=${DEV}p1
@@ -208,29 +208,24 @@ install libvirt + extra tools
 .. code-block:: bash
 
   yum install -y libvirt qemu-kvm
-  yum install -y qemu-guest-agent qemu-kvm-tools virt-top virt-viewer libguestfs virt-who virt-what virt-install virt-manager
+  yum install -y qemu-guest-agent qemu-kvm-tools virt-top \
+                 virt-viewer libguestfs virt-who virt-what \
+                 virt-install virt-manager
 
   systemctl enable libvirtd
   systemctl start libvirtd
 
   ### remove old default pool
-
-  # enter virsh shell
-  virsh
-
-  pool-destroy default
-  #pool-delete default
-  pool-undefine default
+  virsh pool-destroy default
+  virsh pool-undefine default
 
   ### add new default pool at controlled path
 
-  pool-define-as default dir - - - - "/vm"
-  pool-start default
-  pool-autostart default
+  virsh pool-define-as --name default --type dir - - - - "/vm"
+  virsh pool-start default
+  virsh pool-autostart default
   # sanity check
-  pool-info default
-
-  # exit virsh
+  virsh pool-info default
 
   ### libvirt group
 
