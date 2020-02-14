@@ -702,11 +702,9 @@ https://github.com/lsst-it/lsst-puppet-hiera-private/settings/keys
 __Do not allow write access.__
 
 
-.. code-block:: yaml
-
-
-run r10k
+Run r10k to populate the Puppet code, and then import all environments into Foreman.
 
 .. code-block:: yaml
 
   r10k deploy environment -ptv
+  hammer proxy import-classes --id 1
