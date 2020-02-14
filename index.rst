@@ -671,10 +671,8 @@ XXX put `r10k.yaml` some place it can be `curl`'d.
 
 .. code-block:: yaml
 
-  mkdir -p /etc/puppetlabs/r10k
-  chown root:root /etc/puppetlabs/r10k
-  chmod 0755 /etc/puppetlabs/r10k
-  cat > /etc/puppetlabs/r10k/r10k.yaml <<END
+  install -d -m 0755 -o root -g root /etc/puppetlabs/r10k
+  install -m 0644 -o root -g root /dev/stdin /etc/puppetlabs/r10k/r10k.yaml <<END
   cachedir: "/var/cache/r10k"
   sources:
     control:
@@ -683,33 +681,28 @@ XXX put `r10k.yaml` some place it can be `curl`'d.
     lsst_hiera_private:
       remote: "git@github.com:lsst-it/lsst-puppet-hiera-private.git"
       basedir: "/etc/puppetlabs/code/hieradata/private"
-    lsst_hiera_public:
-      remote: "https://github.com/lsst-it/lsst-puppet-hiera.git"
-      basedir: "/etc/puppetlabs/code/hieradata/public"
   END
-  chown root:root /etc/puppetlabs/r10k/r10k.yaml
-  chmod 0644 /etc/puppetlabs/r10k/r10k.yaml
 
-setup github deploy keys
+Setup GitHub deploy keys and GitHub SSH known hosts:
 
 .. code-block:: yaml
 
+  install -d -m 0700 -o root -g root /root/.ssh
   cd /root/.ssh
-  ssh-keygen -t rsa -b 2048 -C "foreman.cp.lsst.org" -f id_rsa -N ""
+  ssh-keygen -t rsa -b 2048 -C "$(hostname -f) - r10k github" -f id_rsa -N ""
+  # pre-accept the github.com git hostkey
+  ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-install public key on `lsst-it/lsst-puppt-hiera-private` repo:
+Install public key on `lsst-it/lsst-puppt-hiera-private` repo:
 
 https://github.com/lsst-it/lsst-puppet-hiera-private/settings/keys
 
-use `hostname -f` as the title of the deploy key.
 
 __Do not allow write access.__
 
-pre-accept the github.com git hostkey
 
 .. code-block:: yaml
 
-  ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 run r10k
 
