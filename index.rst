@@ -169,6 +169,8 @@ Disable SELinux
 
 .. code-block:: bash
    sed -ie '/SELINUX=/s/=.*/=disabled/' /etc/selinux/config
+   # Perform a fast reboot - don't reinitialize the hardware.
+   systemctl kexec
 
 Disable iptables
 ^^^^^^^^^^^^^^^^
