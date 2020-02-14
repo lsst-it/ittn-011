@@ -365,6 +365,7 @@ BDC:
 
 .. code-block:: bash
 
+   #CORE1
    systemctl disable --now firewalld
    FOREMAN_IP="139.229.135.5"
    DHCP_RANGE="139.229.135.192 139.229.135.253"
@@ -495,12 +496,12 @@ configure smart-proxy isc bind plugin (if not configured by foreman-installer)
 
   yum install -y rubygem-smart_proxy_dhcp_remote_isc.noarch
 
-  [root@foreman settings.d]# cat dhcp.yml
+  [root@foreman]# cat /etc/foreman-proxy/settings.d/dhcp.yml
   ---
   :enabled: https
   :use_provider: dhcp_isc
   :server: 127.0.0.1
-  [root@foreman settings.d]# cat dhcp_isc.yml
+  [root@foreman]# cat /etc/foreman-proxy/settings.d/dhcp_isc.yml
   ---
   #
   # Configuration file for ISC dhcp provider
