@@ -365,6 +365,7 @@ BDC:
 
 .. code-block:: bash
 
+   systemctl disable --now firealld
    FOREMAN_IP="139.229.135.5"
    DHCP_RANGE="139.229.135.192 139.229.135.253"
    DHCP_GATEWAY="139.229.135.254"
@@ -373,7 +374,7 @@ BDC:
    DNS_REVERSE_ZONE="135.229.139.in-addr.arpa"
    DNS_FORWARDERS="139.229.136.35"
    FOREMAN_URL="https://foreman.ls.lsst.org"
-   foreman-installer \
+   sudo foreman-installer \
      --enable-foreman-cli  \
      --enable-foreman-proxy \
      --foreman-proxy-tftp=true \
