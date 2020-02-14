@@ -783,5 +783,5 @@ Reclassify the foreman and core nodes.
 
 .. code-block:: bash
 
-   hammer host update --name foreman.ls.lsst.org --parameters role=foreman
-   hammer host update --name core1.ls.lsst.org --parameters role=hypervisor
+   hammer host update --name foreman.ls.lsst.org --parameters role=foreman --hostgroup-title ls/corels
+   hammer host update --name core1.ls.lsst.org --parameters role=hypervisor --hostgroup-title ls/corels
