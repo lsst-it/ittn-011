@@ -108,7 +108,7 @@ Configure the host management interface.
 Configure the hypervisor interface as a trunk. VMs will be attached to subinterfaces.
 
 .. code-block:: bash
-   nmcli conn add save yes ifname br1800 type bridge
+   nmcli conn add save yes ifname br1800 con-name br1800 type bridge
   
 .. code-block:: bash
    nmcli con modify p2p1 connection.autoconnect yes
@@ -261,8 +261,8 @@ create foreman/puppet VM
     --file-size=50 \
     --os-type=linux \
     --os-variant=rhel7 \
-    --network bridge=br1621 \
-    --location=/home/jhoblitt/CentOS-7-x86_64-Minimal-1908.iso
+    --network bridge=br1800 \
+    --location=/tmp/CentOS-7-x86_64-Minimal-1908.iso
 
 foreman/puppet VM
 -----------------
