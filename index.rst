@@ -734,6 +734,10 @@ hosts and hostgroups.
    autopart <%= host_param('autopart_options') %>
    END
 
+.. code-block:: bash
+
+   hammer medium add-operatingsystem --name "CentOS mirror" --operatingsystem "CentOS 7.7.1908"
+
 Global parameters
 ^^^^^^^^^^^^^^^^^
 
