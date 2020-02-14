@@ -110,59 +110,59 @@ Configure the hypervisor interface as a trunk. VMs will be attached to subinterf
    nmcli con add save yes type vlan dev p2p1 id 1800 con-name p2p1.1800
 
 .. code-block:: console
-  [jhoblitt@core1 network-scripts]$ ls -1 ifcfg-*
-  ifcfg-br32
-  ifcfg-br700
-  ifcfg-br701
-  ifcfg-br702
-  ifcfg-br703
-  ifcfg-br800
-  ifcfg-br801
-  ifcfg-em1
-  ifcfg-em2
-  ifcfg-em2.32
-  ifcfg-em2.700
-  ifcfg-em2.701
-  ifcfg-em2.702
-  ifcfg-em2.703
-  ifcfg-em2.800
-  ifcfg-em2.801
-  ifcfg-lo
-  ifcfg-p2p1
-  ifcfg-p2p2
-  [jhoblitt@core1 network-scripts]$ cat ifcfg-em1
-  TYPE=Ethernet
-  PROXY_METHOD=none
-  BROWSER_ONLY=no
-  BOOTPROTO=none
-  IPV6INIT=no
-  IPV6_AUTOCONF=no
-  NAME=em1
-  DEVICE=em1
-  ONBOOT=yes
-  IPADDR=140.252.35.7
-  NETMASK=255.255.255.128
-  GATEWAY=140.252.35.1
-  [jhoblitt@core1 network-scripts]$ cat ifcfg-em2.32
-  # File Managed by Puppet
-  DEVICE="em2.32"
-  BOOTPROTO="none"
-  ONBOOT="yes"
-  TYPE="none"
-  USERCTL="no"
-  PEERDNS="no"
-  PEERNTP="no"
-  VLAN="yes"
-  BRIDGE="br32"
-  [jhoblitt@core1 network-scripts]$ cat ifcfg-br32
-  # File Managed by Puppet
-  DEVICE="br32"
-  BOOTPROTO="none"
-  ONBOOT="yes"
-  TYPE="bridge"
-  USERCTL="no"
-  PEERDNS="no"
-  PEERNTP="no"
+   [jhoblitt@core1 network-scripts]$ ls -1 ifcfg-*
+   ifcfg-br32
+   ifcfg-br700
+   ifcfg-br701
+   ifcfg-br702
+   ifcfg-br703
+   ifcfg-br800
+   ifcfg-br801
+   ifcfg-em1
+   ifcfg-em2
+   ifcfg-em2.32
+   ifcfg-em2.700
+   ifcfg-em2.701
+   ifcfg-em2.702
+   ifcfg-em2.703
+   ifcfg-em2.800
+   ifcfg-em2.801
+   ifcfg-lo
+   ifcfg-p2p1
+   ifcfg-p2p2
+   [jhoblitt@core1 network-scripts]$ cat ifcfg-em1
+   TYPE=Ethernet
+   PROXY_METHOD=none
+   BROWSER_ONLY=no
+   BOOTPROTO=none
+   IPV6INIT=no
+   IPV6_AUTOCONF=no
+   NAME=em1
+   DEVICE=em1
+   ONBOOT=yes
+   IPADDR=140.252.35.7
+   NETMASK=255.255.255.128
+   GATEWAY=140.252.35.1
+   [jhoblitt@core1 network-scripts]$ cat ifcfg-em2.32
+   # File Managed by Puppet
+   DEVICE="em2.32"
+   BOOTPROTO="none"
+   ONBOOT="yes"
+   TYPE="none"
+   USERCTL="no"
+   PEERDNS="no"
+   PEERNTP="no"
+   VLAN="yes"
+   BRIDGE="br32"
+   [jhoblitt@core1 network-scripts]$ cat ifcfg-br32
+   # File Managed by Puppet
+   DEVICE="br32"
+   BOOTPROTO="none"
+   ONBOOT="yes"
+   TYPE="bridge"
+   USERCTL="no"
+   PEERDNS="no"
+   PEERNTP="no"
 
 Disable SELinux
 ^^^^^^^^^^^^^^^
@@ -210,7 +210,7 @@ Create a dedicated volume for VM images
   # vm images are owned qemu:qemu
   chmod 1777 /vm
 
-install libvirt + extra tools
+Install libvirt + extra tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. TODO figure out how to install with VNC instead of SPICE console to play
@@ -394,7 +394,7 @@ Configure plugin
   #
   # Configuration file for 'dns_route53' DNS provider
   #
-  
+
   # Set the following keys for the AWS credentials in use:
   :aws_access_key: ""
   :aws_secret_key: ""
@@ -409,21 +409,21 @@ configure smart-proxy isc bind plugin (if not configured by foreman-installer)
 .. code-block:: yaml
 
   yum install -y rubygem-smart_proxy_dhcp_remote_isc.noarch
-  
-  [root@foreman settings.d]# cat dhcp.yml 
+
+  [root@foreman settings.d]# cat dhcp.yml
   ---
   :enabled: https
   :use_provider: dhcp_isc
   :server: 127.0.0.1
-  [root@foreman settings.d]# cat dhcp_isc.yml 
+  [root@foreman settings.d]# cat dhcp_isc.yml
   ---
   #
   # Configuration file for ISC dhcp provider
   #
-  
+
   :config: /etc/dhcp/dhcpd.conf
   :leases: /var/lib/dhcpd/dhcpd.leases
-  
+
   # Redhat 5
   #
   #:config: /etc/dhcpd.conf
@@ -432,17 +432,17 @@ configure smart-proxy isc bind plugin (if not configured by foreman-installer)
   #
   #:config: /etc/dhcp3/dhcpd.conf
   #:leases: /var/lib/dhcp3/dhcpd.leases
-  
+
   # Specifies TSIG key name and secret
-  
+
   #:key_name: secret_key_name
   #:key_secret: secret_key
-  
-  
+
+
   :omapi_port: 7911
-  
+
   # use :server setting in dhcp.yml if you are managing a dhcp server which is not localhost
-  
+
 
 setup foreman libvirt integration with core1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -453,29 +453,29 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
 
   yum install -y yum-utils augeas
   yum install -y foreman-libvirt
-  
+
   su foreman -s /bin/bash
   ssh-keygen ....
-  
+
   # on target libvirt host
-  
+
   [root@core1 ~]# useradd -r -m foreman
   [root@core1 ~]# su - foreman
   [foreman@core1 ~]$ mkdir .ssh
   [foreman@core1 ~]$ chmod 700 .ssh
   [foreman@core1 .ssh]$ vi authorized_keys
   [foreman@core1 .ssh]$ chmod 600 authorized_keys
-  
+
   # ensure polkit is being used for auth
   augtool -s set '/files/etc/libvirt/libvirtd.conf/access_drivers[1]' polkit
-  
+
   # copied from fedora 30
   # /usr/share/polkit-1/rules.d/50-libvirt.rules
-  
+
   cat << END > /etc/polkit-1/rules.d/80-libvirt.rules
   // Allow any user in the 'libvirt' group to connect to system libvirtd
   // without entering a password.
-  
+
   polkit.addRule(function(action, subject) {
       if (action.id == "org.libvirt.unix.manage" &&
           subject.isInGroup("libvirt")) {
@@ -483,13 +483,13 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
       }
   });
   END
-  
+
   systemctl restart libvirtd
-  
+
   # sanity check
   su - foreman
   virsh --connect qemu:///system list --all
-  
+
   # sanity check from foreman host
   sudo yum install -y libvirt-client
   su foreman -s /bin/bash
@@ -503,16 +503,16 @@ boot strap puppet agent on core1
   sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
   sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   sudo yum -y install puppet-agent
-  
+
   cat > /etc/puppetlabs/puppet/puppet.conf <<END
-  
-  
+
+
   [main]
   vardir = /opt/puppetlabs/puppet/cache
   logdir = /var/log/puppetlabs/puppet
   rundir = /var/run/puppetlabs
   ssldir = /etc/puppetlabs/puppet/ssl
-  
+
   [agent]
   report          = true
   ignoreschedules = true
@@ -534,17 +534,17 @@ Enable foreman-proxy bmc support
 
 .. code-block:: yaml
 
-  [root@foreman settings.d]# cat /etc/foreman-proxy/settings.d/bmc.yml 
+  [root@foreman settings.d]# cat /etc/foreman-proxy/settings.d/bmc.yml
   ---
   # BMC management (Bare metal power and bios controls)
   :enabled: true
-  
+
   # Available providers:
   # - freeipmi / ipmitool - requires the appropriate package installed, and the rubyipmi gem
   # - shell - for local reboot control (requires sudo access to /sbin/shutdown for the proxy user)
   # - ssh - limited remote control (status, reboot, turn off)
   :bmc_default_provider: ipmitool
-  
+
   systemctl restart foreman-proxy
 
 foreman config
