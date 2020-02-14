@@ -716,8 +716,78 @@ Run r10k to populate the Puppet code, and then import all environments into Fore
 Foreman configuration
 =====================
 
+Generate domains, subnets, and other resources that will be associated with
+hosts and hostgroups.
+
+.. code-block:: bash
+
+   hammer domain update --name ls.lsst.org --dns foreman.ls.lsst.org
+
+   hammer subnet create --name IT-Services \
+      --boot-mode DHCP \
+      --network 139.229.135.0 \
+      --mask 255.255.255.0 \
+      --gateway 139.229.135.254 \
+      --network-type 'IPv4' \
+      --dns-primary 139.229.136.35 \
+      --ipam DHCP \
+      --from 139.229.135.1 \
+      --to 139.229.135.32 \
+      --tftp foreman.ls.lsst.org \
+      --dns foreman.ls.lsst.org \
+      --dhcp foreman.ls.lsst.org
+
+.. code-block:: bash
+
+   hammer partition-table create --name "Kickstart sda only" \
+      --description "Kickstart sda only" \
+      --os-family "Redhat" \
+      --operatingsystems "CentOS 7.7.1908" \
+      --file /dev/stdin <<-END
+   <%#
+   kind: ptable
+   name: Kickstart default
+   model: Ptable
+   oses:
+   - CentOS
+   - Fedora
+   - RedHat
+   %>
+   ignoredisk --only-use=sda
+   zerombr
+   clearpart --all --initlabel
+   autopart <%= host_param('autopart_options') %>
+   END
+
+
 Configure the Foreman site and organization.
 
 .. code-block:: bash
+
    hammer global-parameter set --name org --parameter-type string --value lsst
    hammer global-parameter set --name site --parameter-type string --value ls
+
+
+Create hostgroups for the entire site (e.g. ``ls``)and the core group (e.g.
+``ls/corels``). The group for the entire site is needed to set reasonable
+provisioning defaults.
+
+.. code-block:: bash
+
+   hammer hostgroup create \
+      --name ls \
+      --description "All La Serena hosts" \
+      --puppet-ca-proxy foreman.ls.lsst.org \
+      --puppet-proxy foreman.ls.lsst.org
+   hammer hostgroup create \
+      --name corels \
+      --description "Core services for La Serena" \
+      --parent ls \
+      --puppet-environment corels_production \
+      --architecture x86_64 \
+      --domain ls.lsst.org \
+      --subnet IT-Services \
+      --operatingsystem "CentOS 7.7.1908" \
+      --medium "CentOS mirror" \
+      --partition-table "Kickstart sda only" \
+      --group-parameters-attributes '[{"name": "cluster", "value": "corecp", "parameter_type": "string"}]'
