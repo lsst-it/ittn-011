@@ -263,22 +263,22 @@ Install libvirt + extra tools
 
   sudo usermod --append --groups libvirt jhoblit
 
-create foreman/puppet VM
+Create foreman/puppet VM
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
-  curl -O http://centos-distro.1gservers.com/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
-
-  virt-install \
-    --name=foreman \
-    --vcpus=8 \
-    --ram=16384 \
-    --file-size=50 \
-    --os-type=linux \
-    --os-variant=rhel7 \
-    --network bridge=br1800 \
-    --location=/tmp/CentOS-7-x86_64-Minimal-1908.iso
+   curl -O http://centos-distro.1gservers.com/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+   VLAN=1800
+   virt-install \
+     --name=foreman \
+     --vcpus=8 \
+     --ram=16384 \
+     --file-size=50 \
+     --os-type=linux \
+     --os-variant=rhel7 \
+     --network bridge=br${VLAN} \
+     --location=/tmp/CentOS-7-x86_64-Minimal-1908.iso
 
 foreman/puppet VM
 -----------------
