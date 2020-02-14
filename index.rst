@@ -30,6 +30,7 @@ The following networks are required:
   subnet should be assigned a range where reverse DNS records can be managed.
 
   .. note::
+
      At this time we're using Route53 to provide DNS for Cerro Pachon and
      La Serena. Because we have users connecting to the site via VPN and
      frequently use DNS servers from their home institutions, using publicly
@@ -53,6 +54,7 @@ Boot up all core nodes and perform the following configuration changes.
 1. BIOS settings -> Security settings -> Power recovery -> ON.
 
    .. note::
+
       It is absolutely essential that core nodes boot on power restore, as
       these systems will provide the services needed to interact with OOB
       management on other hosts. We commonly apply this same configuration
@@ -67,6 +69,7 @@ core1 hypervisor host
 .. Example given to indicate which version of CentOS we're deploying from.
 
 .. code-block:: bash
+
    curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
    sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
 
@@ -96,6 +99,7 @@ Configure networking
 Configure the host management interface.
 
 .. code-block:: bash
+
    nmcli con edit em1
    set connection.autoconnect yes
    set ipv4.addresses 139.229.135.2/24
@@ -108,6 +112,7 @@ Configure the host management interface.
 Configure the hypervisor interface as a trunk. VMs will be attached to subinterfaces.
 
 .. code-block:: bash
+
    # If the interface is already defined
    nmcli con modify p2p1 connection.autoconnect yes
    # If the interface needs to be created
@@ -117,6 +122,7 @@ Configure the hypervisor interface as a trunk. VMs will be attached to subinterf
 Create a bridge for VMs on VLAN 1800.
 
 .. code-block:: bash
+
    VLAN=1800
    nmcli conn add save yes type bridge ifname br${VLAN} con-name br${VLAN} \
       connection.autoconnect yes ipv4.method disabled ipv6.method ignore
@@ -124,6 +130,7 @@ Create a bridge for VMs on VLAN 1800.
 Attach the VLAN ${VLAN} subinterfaces to the bridge.
 
 .. code-block:: bash
+
    VLAN=1800
    nmcli con add save yes type vlan dev p2p1 id ${VLAN} con-name p2p1.${VLAN} \
       connection.slave-type bridge connection.master br${VLAN} connection.autoconnect yes \
@@ -131,6 +138,7 @@ Attach the VLAN ${VLAN} subinterfaces to the bridge.
 The resulting ifcfg scripts should resemble the following:
 
 .. code-block:: console
+
    [jhoblitt@core1 network-scripts]$ ls -1 ifcfg-*
    ifcfg-br32
    ifcfg-br700
@@ -189,6 +197,7 @@ Disable SELinux
 ^^^^^^^^^^^^^^^
 
 .. code-block:: bash
+
    sed -ie '/SELINUX=/s/=.*/=disabled/' /etc/selinux/config
    # Perform a fast reboot - don't reinitialize the hardware.
    systemctl kexec
@@ -197,6 +206,7 @@ Disable iptables
 ^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
+
    yum install -y iptables-services
    systemctl stop iptables
    systemctl disable iptables
@@ -301,6 +311,7 @@ install foreman
 Tucson:
 
 .. code-block:: bash
+
    foreman-installer \
      --enable-foreman-cli  \
      --enable-foreman-proxy \
