@@ -637,28 +637,8 @@ Enable foreman-proxy bmc support
 
   systemctl restart foreman-proxy
 
-foreman config
-^^^^^^^^^^^^^^
-
-global parameters
-
-.. code-block:: yaml
-
-  enable-puppetlabs-pc1-repo boolean true
-
-hostgroup
-
-coreXX
-
-### parameters
-
-cluster string core
-site    string po
-
-install r10k
-^^^^^^^^^^^^
-
-git is a r10k dep -- make sure it is installed.
+Install and configure r10k
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: yaml
 
