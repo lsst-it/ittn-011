@@ -197,11 +197,10 @@ Disable iptables
 ^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
-
-  yum install -y iptables-services
-  systemctl stop iptables
-  systemctl disable iptables
-  iptables -F
+   yum install -y iptables-services
+   systemctl stop iptables
+   systemctl disable iptables
+   iptables -F
 
 Create a dedicated volume for VM images
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
