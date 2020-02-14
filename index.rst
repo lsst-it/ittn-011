@@ -292,7 +292,7 @@ disable iptables
 install foreman
 ^^^^^^^^^^^^^^^
 
-.. code-block:: yaml
+.. code-block:: bash
 
    sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
    sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
