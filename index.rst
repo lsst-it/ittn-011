@@ -365,7 +365,7 @@ BDC:
 
 .. code-block:: bash
 
-   systemctl disable --now firealld
+   systemctl disable --now firewalld
    FOREMAN_IP="139.229.135.5"
    DHCP_RANGE="139.229.135.192 139.229.135.253"
    DHCP_GATEWAY="139.229.135.254"
