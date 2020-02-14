@@ -108,11 +108,11 @@ Configure the host management interface.
 Configure the hypervisor interface as a trunk. VMs will be attached to subinterfaces.
 
 .. code-block:: bash
-   nmcli conn add save yes ifname br1800 con-name br1800 type bridge
+   nmcli conn add save yes ifname br1800 con-name br1800 type bridge connection.autoconnect yes
   
 .. code-block:: bash
    nmcli con modify p2p1 connection.autoconnect yes
-   nmcli con add save yes type vlan dev p2p1 id 1800 con-name p2p1.1800 connection.slave-type bridge connection.master br1800
+   nmcli con add save yes type vlan dev p2p1 id 1800 con-name p2p1.1800 connection.slave-type bridge connection.master br1800 connection.autoconnect yes
 
 .. code-block:: console
    [jhoblitt@core1 network-scripts]$ ls -1 ifcfg-*
