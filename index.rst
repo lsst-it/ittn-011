@@ -467,6 +467,7 @@ Install route53 plugin
   [root@foreman ~]# cat /etc/foreman-proxy/settings.d/dns.yml
   :enabled: https
   :dns_ttl: 60
+  :use_provider: dns_route53
 
 Configure AWS IAM policy (generally may be reused between all LSST foreman instances)
 
