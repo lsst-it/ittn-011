@@ -575,7 +575,7 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
 
   systemctl restart libvirtd
 
-  # sanity check
+  # sanity check from core1
   su - foreman
   virsh --connect qemu:///system list --all
 
