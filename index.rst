@@ -763,8 +763,9 @@ provisioning defaults.
       --description "All La Serena hosts" \
       --puppet-ca-proxy foreman.ls.lsst.org \
       --puppet-proxy foreman.ls.lsst.org
+   HOSTGROUP="corels"
    hammer hostgroup create \
-      --name corels \
+      --name "${HOSTGROUP}" \
       --description "Core services for La Serena" \
       --parent ls \
       --puppet-environment corels_production \
@@ -774,7 +775,7 @@ provisioning defaults.
       --operatingsystem "CentOS 7.7.1908" \
       --medium "CentOS mirror" \
       --partition-table "Kickstart sda only" \
-      --group-parameters-attributes '[{"name": "cluster", "value": "corecp", "parameter_type": "string"}]'
+      --group-parameters-attributes '[{"name": "cluster", "value": '"${HOSTGROUP}"', "parameter_type": "string"}]'
 
 Host classification
 ^^^^^^^^^^^^^^^^^^^
