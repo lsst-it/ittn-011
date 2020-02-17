@@ -691,33 +691,43 @@ Run r10k to populate the Puppet code, and then import all environments into Fore
 Foreman configuration
 =====================
 
+Global parameters
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   # Configure the Foreman site and organization.
+   hammer global-parameter set --name org --parameter-type string --value lsst
+   hammer global-parameter set --name site --parameter-type string --value ls
+   # Configure the Foreman site and organization.
+   hammer global-parameter set --name enable-puppetlabs-puppet6-repo --parameter-type boolean --value true
+
+Hostgroup dependencies
+^^^^^^^^^^^^^^^^^^^^^^
+
 Generate domains, subnets, and other resources that will be associated with
 hosts and hostgroups.
 
 .. code-block:: bash
 
+   # Update the `ls.lsst.org` domain to use Foreman as the forward DNS proxy
    hammer domain update --name ls.lsst.org --dns foreman.ls.lsst.org
 
+   # Define a subnet for core services, using the Foreman smart proxies.
+   # Note that the `--dns` option sets the reverse DNS smart proxy.
    hammer subnet create --name IT-Services \
-      --boot-mode DHCP \
-      --network 139.229.135.0 \
-      --mask 255.255.255.0 \
+      --network-type 'IPv4' --boot-mode DHCP \
+      --network 139.229.135.0 --mask 255.255.255.0 \
       --gateway 139.229.135.254 \
-      --network-type 'IPv4' \
       --dns-primary 139.229.136.35 \
-      --ipam DHCP \
-      --from 139.229.135.1 \
-      --to 139.229.135.32 \
-      --tftp foreman.ls.lsst.org \
-      --dns foreman.ls.lsst.org \
-      --dhcp foreman.ls.lsst.org
+      --from 139.229.135.1 --to 139.229.135.32 --ipam DHCP \
+      --tftp foreman.ls.lsst.org --dns foreman.ls.lsst.org --dhcp foreman.ls.lsst.org
 
-.. code-block:: bash
-
+   # Create a default partition table that sets up a simple partition table on the
+   # first disk.
    hammer partition-table create --name "Kickstart sda only" \
       --description "Kickstart sda only" \
-      --os-family "Redhat" \
-      --operatingsystems "CentOS 7.7.1908" \
+      --os-family "Redhat" --operatingsystems "CentOS 7.7.1908" \
       --file /dev/stdin <<-END
    <%#
    kind: ptable
@@ -734,20 +744,10 @@ hosts and hostgroups.
    autopart <%= host_param('autopart_options') %>
    END
 
-.. code-block:: bash
-
+   # Installation media and operating system versions need to be associated, and
+   # we need a medium defined to create the `ls/corels` hostgroup. Create that
+   # association here.
    hammer medium add-operatingsystem --name "CentOS mirror" --operatingsystem "CentOS 7.7.1908"
-
-Global parameters
-^^^^^^^^^^^^^^^^^
-
-.. code-block:: bash
-
-   # Configure the Foreman site and organization.
-   hammer global-parameter set --name org --parameter-type string --value lsst
-   hammer global-parameter set --name site --parameter-type string --value ls
-   # Configure the Foreman site and organization.
-   hammer global-parameter set --name enable-puppetlabs-puppet6-repo --parameter-type boolean --value true
 
 Hostgroups
 ^^^^^^^^^^
