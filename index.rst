@@ -750,7 +750,7 @@ hosts and hostgroups.
    # association here.
    hammer medium add-operatingsystem --name "CentOS mirror" --operatingsystem "CentOS 7.7.1908"
 
-TODO: operating system associations
+TODO: provisioning template/operating system associations
 
 .. code-block:: bash
 
@@ -759,6 +759,22 @@ TODO: operating system associations
      hammer template info --id $i \
        | ruby -e 'str = ARGF.read; puts str if str =~ /CentOS/'
    done
+
+.. code-block:: bash
+
+   hammer os add-config-template --config-template "Kickstart default" --title "CentOS 7.7.1908"
+   hammer os add-config-template --config-template "Kickstart default iPXE" --title "CentOS 7.7.1908"
+   hammer os add-config-template --config-template "Kickstart default PXEGrub2" --title "CentOS 7.7.1908"
+   hammer os add-config-template --config-template "CloudInit default" --title "CentOS 7.7.1908"
+   hammer os add-config-template --config-template "UserData open-vm-tools" --title "CentOS 7.7.1908"
+
+   # TODO: replace hardcoded OS ID
+   hammer os set-default-template --id 1 \
+     --config-template-id "$(hammer template info --name 'Kickstart default' --fields id | awk '{ print $2 }')"
+   hammer os set-default-template --id 1 \
+     --config-template-id "$(hammer template info --name 'Kickstart default iPXE' --fields id | awk '{ print $2 }')"
+   hammer os set-default-template --id 1 \
+     --config-template-id "$(hammer template info --name 'Kickstart default PXEGrub2' --fields id | awk '{ print $2 }')"
 
 Hostgroups
 ^^^^^^^^^^
