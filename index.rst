@@ -721,6 +721,7 @@ hosts and hostgroups.
       --gateway 139.229.135.254 \
       --dns-primary 139.229.136.35 \
       --from 139.229.135.1 --to 139.229.135.32 --ipam DHCP \
+      --domains ls.lsst.org \
       --tftp foreman.ls.lsst.org --dns foreman.ls.lsst.org --dhcp foreman.ls.lsst.org
 
    # Create a default partition table that sets up a simple partition table on the
