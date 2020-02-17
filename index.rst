@@ -613,13 +613,6 @@ boot strap puppet agent on core1
 
   END
 
-foreman config for core1
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-add host parameter:
-
-role string hypervisor
-
 Enable foreman-proxy bmc support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
