@@ -746,6 +746,9 @@ hosts and hostgroups.
    autopart <%= host_param('autopart_options') %>
    END
 
+   # Associate the default kickstart partitioning table as well - we'll use that for libvirt VMs.
+   hammer partition-table add-operatingsystem --name 'Kickstart default' --operatingsystem 'CentOS 7.7.1908'
+
    # Installation media and operating system versions need to be associated, and
    # we need a medium defined to create the `ls/corels` hostgroup. Create that
    # association here.
@@ -804,6 +807,10 @@ provisioning defaults.
       --medium "CentOS mirror" \
       --partition-table "Kickstart sda only" \
       --group-parameters-attributes '[{"name": "cluster", "value": '"${HOSTGROUP}"', "parameter_type": "string"}]'
+
+   hammer hostgroup create --name vm --parent corels \
+      --compute-profile 1-Small --partition-table 'Kickstart default' \
+      --pxe-loader 'iPXE Embedded'
 
 Host classification
 ^^^^^^^^^^^^^^^^^^^
