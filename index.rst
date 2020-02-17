@@ -394,6 +394,8 @@ BDC:
      --enable-foreman-plugin-remote-execution \
      --enable-foreman-plugin-dhcp-browser \
      --enable-foreman-proxy-plugin-remote-execution-ssh
+   virsh autostart foreman
+
 
 
 multi-homed network setup
