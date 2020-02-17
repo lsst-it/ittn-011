@@ -749,6 +749,16 @@ hosts and hostgroups.
    # association here.
    hammer medium add-operatingsystem --name "CentOS mirror" --operatingsystem "CentOS 7.7.1908"
 
+TODO: operating system associations
+
+.. code-block:: bash
+
+   # Scan for all templates associated with CentOS
+   for i in {1..200}; do
+     hammer template info --id $i \
+       | ruby -e 'str = ARGF.read; puts str if str =~ /CentOS/'
+   done
+
 Hostgroups
 ^^^^^^^^^^
 
