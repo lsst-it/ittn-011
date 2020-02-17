@@ -543,12 +543,13 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
 
   ##On target libvirt host (core1)
   [root@core1 ~]# useradd -r -m foreman
+  [root@core1 ~]# usermod -a -G libvirt foreman
   [root@core1 ~]# su - foreman
   [foreman@core1 ~]$ mkdir .ssh
   [foreman@core1 ~]$ chmod 700 .ssh
 
   ##On Foreman instance
-  yum install -y yum-utils augeas foreman-libvirt
+  yum install -y yum-utils augeas foreman-libvirt libvirt-client
   su foreman -s /bin/bash
   ssh-keygen
   scp -l root /usr/share/foreman/.ssh/id_rsa.pub root@core1.ls.lsst.org:/home/foreman/.ssh/authorized_keys
@@ -579,7 +580,7 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
 
   END
 
-  systemctl restart libvirtd
+  systemctl restart libvirtd polkit
 
   # sanity check from core1
   su - foreman
