@@ -562,16 +562,20 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
   # copied from fedora 30
   # /usr/share/polkit-1/rules.d/50-libvirt.rules
 
+  ## Important! The commented "if" and the AdminRule must be solved
   cat << END > /etc/polkit-1/rules.d/80-libvirt.rules
   // Allow any user in the 'libvirt' group to connect to system libvirtd
   // without entering a password.
 
   polkit.addRule(function(action, subject) {
-      if (action.id == "org.libvirt.unix.manage" &&
-          subject.isInGroup("libvirt")) {
+      //if (action.id == "org.libvirt.unix.manage" &&
+      if (subject.isInGroup("libvirt")) {
           return polkit.Result.YES;
       }
   });
+
+  polkit.addAdminRule(function(action, subject) {
+      return ["unix-group:libvirt"];
 
   END
 
