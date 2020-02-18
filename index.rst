@@ -828,18 +828,25 @@ Adding hypervisors
 .. code-block:: bash
 
    SHORTNAME=core2
+   BRIDGE=br1800
    hammer compute-resource create --name "${SHORTNAME}" \
      --display-type VNC --provider Libvirt \
      --url "qemu+ssh://foreman@$SHORTNAME.ls.lsst.org/system"
 
-   hammer compute-profile values create \
+   hammer compute-profile values update \
      --compute-profile 1-Small --compute-resource "${SHORTNAME}" \
-     --compute-attributes '{"cpus"=>"2", "cpu_mode"=>"default", "memory"=>"4294967296", "nics_attributes"=>{"0"=>{"type"=>"bridge", "bridge"=>"br1800", "model"=>"virtio"}}, "volumes_attributes"=>{"0"=>{"pool_name"=>"default", "capacity"=>"40G", "allocation"=>"0G", "format_type"=>"raw"}}}'
+     --compute-attributes "cores=2,memory=$((4 * 1024 * 1024 * 1024))" \
+     --interface "compute_type=bridge,compute_bridge=${BRIDGE},compute_model=virtio" \
+     --volume "pool_name=default,capacity=40G,allocation=0,format_type=raw"
 
-   hammer compute-profile values create \
+   hammer compute-profile values update \
      --compute-profile 2-Medium --compute-resource "${SHORTNAME}" \
-     --compute-attributes '{"cpus"=>"4", "cpu_mode"=>"default", "memory"=>"8589934592", "nics_attributes"=>{"0"=>{"type"=>"bridge", "bridge"=>"br1800", "model"=>"virtio"}}, "volumes_attributes"=>{"0"=>{"pool_name"=>"default", "capacity"=>"80G", "allocation"=>"0G", "format_type"=>"raw"}}}'
+     --compute-attributes "cores=4,memory=$((8 * 1024 * 1024 * 1024))" \
+     --interface "compute_type=bridge,compute_bridge=${BRIDGE},compute_model=virtio" \
+     --volume "pool_name=default,capacity=80G,allocation=0,format_type=raw"
 
-   hammer compute-profile values create \
+   hammer compute-profile values update \
      --compute-profile 3-Large --compute-resource "${SHORTNAME}" \
-     --compute-attributes ' {"cpus"=>"8", "cpu_mode"=>"default", "memory"=>"17179869184", "nics_attributes"=>{"0"=>{"type"=>"bridge", "bridge"=>"br1800", "model"=>"virtio"}}, "volumes_attributes"=>{"0"=>{"pool_name"=>"default", "capacity"=>"160G", "allocation"=>"0G", "format_type"=>"raw"}}}'
+     --compute-attributes "cores=8,memory=$((16 * 1024 * 1024 * 1024))" \
+     --interface "compute_type=bridge,compute_bridge=${BRIDGE},compute_model=virtio" \
+     --volume "pool_name=default,capacity=160G,allocation=0,format_type=raw"
