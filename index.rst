@@ -821,3 +821,25 @@ Reclassify the foreman and core nodes.
 
    hammer host update --name foreman.ls.lsst.org --parameters role=foreman --hostgroup-title ls/corels
    hammer host update --name core1.ls.lsst.org --parameters role=hypervisor --hostgroup-title ls/corels
+
+Adding hypervisors
+^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   SHORTNAME=core2
+   hammer compute-resource create --name "${SHORTNAME}" \
+     --display-type VNC --provider Libvirt \
+     --url "qemu+ssh://foreman@$SHORTNAME.ls.lsst.org/system"
+
+   hammer compute-profile values create \
+     --compute-profile 1-Small --compute-resource "${SHORTNAME}" \
+     --compute-attributes '{"cpus"=>"2", "cpu_mode"=>"default", "memory"=>"4294967296", "nics_attributes"=>{"0"=>{"type"=>"bridge", "bridge"=>"br1800", "model"=>"virtio"}}, "volumes_attributes"=>{"0"=>{"pool_name"=>"default", "capacity"=>"40G", "allocation"=>"0G", "format_type"=>"raw"}}}'
+
+   hammer compute-profile values create \
+     --compute-profile 2-Medium --compute-resource "${SHORTNAME}" \
+     --compute-attributes '{"cpus"=>"4", "cpu_mode"=>"default", "memory"=>"8589934592", "nics_attributes"=>{"0"=>{"type"=>"bridge", "bridge"=>"br1800", "model"=>"virtio"}}, "volumes_attributes"=>{"0"=>{"pool_name"=>"default", "capacity"=>"80G", "allocation"=>"0G", "format_type"=>"raw"}}}'
+
+   hammer compute-profile values create \
+     --compute-profile 3-Large --compute-resource "${SHORTNAME}" \
+     --compute-attributes ' {"cpus"=>"8", "cpu_mode"=>"default", "memory"=>"17179869184", "nics_attributes"=>{"0"=>{"type"=>"bridge", "bridge"=>"br1800", "model"=>"virtio"}}, "volumes_attributes"=>{"0"=>{"pool_name"=>"default", "capacity"=>"160G", "allocation"=>"0G", "format_type"=>"raw"}}}'
