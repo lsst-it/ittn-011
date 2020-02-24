@@ -321,6 +321,8 @@ install foreman
    sudo yum -y install https://yum.theforeman.org/releases/"${FOREMAN_VERSION}"/el7/x86_64/foreman-release.rpm
    sudo yum -y install foreman-installer
 
+TODO: collapse all plugin configuration into these calls, or properly document how we're adding plugins.
+
 Tucson:
 
 .. code-block:: bash
@@ -850,3 +852,23 @@ Adding hypervisors
      --compute-attributes "cpus=8,memory=$((16 * 1024 * 1024 * 1024))" \
      --interface "compute_type=bridge,compute_bridge=${BRIDGE},compute_model=virtio" \
      --volume "pool_name=default,capacity=160G,allocation=0,format_type=raw"
+
+Foreman host discovery
+^^^^^^^^^^^^^^^^^^^^^^
+
+See also: https://theforeman.org/plugins/foreman_discovery/14.0/index.html
+
+.. code-block:: bash
+
+   foreman-installer \
+     --enable-foreman-proxy-plugin-discovery \
+     --foreman-proxy-plugin-discovery-install-images=true
+   yum install tfm-rubygem-hammer_cli_foreman_discovery
+   systemctl restart httpd foreman-proxy
+
+   # Verify that foreman discovery is ready
+   hammery discovery list
+
+   hammer settings set --name default_pxe_item_global --value discovery
+   hammer template build-pxe-default
+   hammer subnet update --name 'IT-Services' --discovery-id 1
