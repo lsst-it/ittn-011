@@ -366,7 +366,7 @@ Cerro Pachon:
 Foreman Console
 ^^^^^^^^^^^^^^^
 Since we generated a self-signed certificate, you'll need to import it to the web browser you 
-are using - otherwise the remtote console won't be able.
+are using - otherwise the Foreman remote console won't be able to connect.
 
 .. code-block:: bash
 
