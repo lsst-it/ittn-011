@@ -368,7 +368,7 @@ Foreman Console
 Since we generated a self-signed certificate, you'll need to import it to the web browser you 
 are using - otherwise the remtote console won't be able.
 
-.. code-block:: yaml
+.. code-block:: bash
 
   HOSTNAME="foreman.ls.lsst.org"
   curl -k https://"${HOSTNAME}":8140/puppet-ca/v1/certificate/ca > bundle.pem
