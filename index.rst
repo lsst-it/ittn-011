@@ -884,3 +884,17 @@ See also: https://theforeman.org/plugins/foreman_discovery/14.0/index.html
    hammer settings set --name default_pxe_item_global --value discovery
    hammer template build-pxe-default
    hammer subnet update --name 'IT-Services' --discovery-id 1
+
+There's a bug in the default pxegrub2_discovery template where the boot MAC
+address isn't correctly populated. We can patch that with the following:
+
+.. code-block:: bash
+
+   hammer template update --name pxegrub2_discovery --locked=no
+
+   hammer template dump --name pxegrub2_discovery \
+      | sed -e 's/$mac/$net_default_mac/' \
+      | hammer template update --name pxegrub2_discovery --file /dev/stdin
+
+   hammer template update --name pxegrub2_discovery --locked=yes
+   hammer template build-pxe-default
