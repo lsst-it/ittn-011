@@ -857,13 +857,13 @@ Adding hypervisors
      --compute-profile 2-Medium --compute-resource "${SHORTNAME}" \
      --compute-attributes "cpus=4,memory=$((8 * 1024 * 1024 * 1024))" \
      --interface "type=bridge,bridge=${BRIDGE},compute_model=virtio" \
-     --volume "pool_name=default,capacity=80G,allocation=0,format_type=raw"
+     --volume "pool_name=default,capacity=40G,allocation=0,format_type=raw"
 
    hammer compute-profile values update \
      --compute-profile 3-Large --compute-resource "${SHORTNAME}" \
      --compute-attributes "cpus=8,memory=$((16 * 1024 * 1024 * 1024))" \
      --interface "type=bridge,bridge=${BRIDGE},compute_model=virtio" \
-     --volume "pool_name=default,capacity=160G,allocation=0,format_type=raw"
+     --volume "pool_name=default,capacity=40G,allocation=0,format_type=raw"
 
 Foreman host discovery
 ^^^^^^^^^^^^^^^^^^^^^^
