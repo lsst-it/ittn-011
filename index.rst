@@ -839,13 +839,17 @@ Reclassify the foreman and core nodes.
 Adding hypervisors
 ^^^^^^^^^^^^^^^^^^
 
+Note that ``hammer compute-profile values update`` will fail for values that
+haven't been initialized.  A value must be already set from the www UI or via
+``hammer compute-profile values create ...``.
+
 .. code-block:: bash
 
    SHORTNAME=core2
    BRIDGE=br1800
    hammer compute-resource create --name "${SHORTNAME}" \
      --display-type VNC --provider Libvirt \
-     --url "qemu+ssh://foreman@$SHORTNAME.ls.lsst.org/system"
+     --url "qemu+ssh://foreman@$SHORTNAME.$(hostname -d)/system"
 
    hammer compute-profile values update \
      --compute-profile 1-Small --compute-resource "${SHORTNAME}" \
