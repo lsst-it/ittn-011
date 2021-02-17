@@ -839,13 +839,17 @@ Reclassify the foreman and core nodes.
 Adding hypervisors
 ^^^^^^^^^^^^^^^^^^
 
+Note that ``hammer compute-profile values update`` will fail for values that
+haven't been initialized.  A value must be already set from the www UI or via
+``hammer compute-profile values create ...``.
+
 .. code-block:: bash
 
    SHORTNAME=core2
    BRIDGE=br1800
    hammer compute-resource create --name "${SHORTNAME}" \
      --display-type VNC --provider Libvirt \
-     --url "qemu+ssh://foreman@$SHORTNAME.ls.lsst.org/system"
+     --url "qemu+ssh://foreman@$SHORTNAME.$(hostname -d)/system"
 
    hammer compute-profile values update \
      --compute-profile 1-Small --compute-resource "${SHORTNAME}" \
@@ -857,13 +861,13 @@ Adding hypervisors
      --compute-profile 2-Medium --compute-resource "${SHORTNAME}" \
      --compute-attributes "cpus=4,memory=$((8 * 1024 * 1024 * 1024))" \
      --interface "type=bridge,bridge=${BRIDGE},compute_model=virtio" \
-     --volume "pool_name=default,capacity=80G,allocation=0,format_type=raw"
+     --volume "pool_name=default,capacity=40G,allocation=0,format_type=raw"
 
    hammer compute-profile values update \
      --compute-profile 3-Large --compute-resource "${SHORTNAME}" \
      --compute-attributes "cpus=8,memory=$((16 * 1024 * 1024 * 1024))" \
      --interface "type=bridge,bridge=${BRIDGE},compute_model=virtio" \
-     --volume "pool_name=default,capacity=160G,allocation=0,format_type=raw"
+     --volume "pool_name=default,capacity=40G,allocation=0,format_type=raw"
 
 Foreman host discovery
 ^^^^^^^^^^^^^^^^^^^^^^
