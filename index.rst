@@ -305,17 +305,32 @@ Disable iptables
    systemctl disable iptables
    iptables -F
 
-install foreman
+Install Foreman
 ^^^^^^^^^^^^^^^
 
+### EL7
+
 .. code-block:: bash
+
    FOREMAN_VERSION="1.24"
    sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
    sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
    sudo yum -y install https://yum.theforeman.org/releases/"${FOREMAN_VERSION}"/el7/x86_64/foreman-release.rpm
    sudo yum -y install foreman-installer
 
-TODO: collapse all plugin configuration into these calls, or properly document how we're adding plugins.
+### EL8
+
+.. code-block:: bash
+
+   FOREMAN_VERSION="3.2"
+   sudo yum -y install https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
+   sudo dnf module reset postgresql -y
+   sudo dnf module enable postgresql:12 -y
+   sudo dnf module reset ruby -y
+   sudo dnf module enable ruby:2.7 -y
+   sudo yum -y install https://yum.theforeman.org/releases/${FOREMAN_VERSION}/el8/x86_64/foreman-release.rpm
+   sudo yum -y install foreman-installer
+
 
 Tucson:
 
