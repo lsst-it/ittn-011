@@ -2,18 +2,10 @@
 
 .. Please do not modify tocdepth; will be fixed when a new Sphinx theme is shipped.
 
-.. note::
-
-   **This technote is not yet published.**
-
-   Bootstrapping the Deployment Platform
-
 .. sectnum::
 
 Introduction
 ============
-
-.. TODO
 
 This document was originally populated based on the Tucson core deployment, and
 was fully expanded and verified in the Base DC deployment.
