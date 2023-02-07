@@ -357,19 +357,6 @@ Cerro Pachon:
     --enable-foreman-plugin-dhcp-browser \
     --enable-foreman-proxy-plugin-remote-execution-ssh
 
-Foreman Console
-^^^^^^^^^^^^^^^
-Since we generated a self-signed certificate, you'll need to import it to the web browser you 
-are using - otherwise the Foreman remote console won't be able to connect.
-
-.. code-block:: bash
-
-  HOSTNAME="foreman.ls.lsst.org"
-  curl -k https://"${HOSTNAME}":8140/puppet-ca/v1/certificate/ca > bundle.pem
-
-Once you have the bundle.pem file, import it to your trusted certificates in the web browser.
-
-
 BDC:
 
 .. code-block:: bash
@@ -402,6 +389,16 @@ BDC:
      --enable-foreman-plugin-dhcp-browser \
      --enable-foreman-proxy-plugin-remote-execution-ssh
 
+Foreman Console
+^^^^^^^^^^^^^^^
+Since we generated a self-signed certificate, you'll need to import it to the web browser you are using - otherwise the Foreman remote console won't be able to connect.
+
+.. code-block:: bash
+
+  HOSTNAME="foreman.ls.lsst.org"
+  curl -k https://"${HOSTNAME}":8140/puppet-ca/v1/certificate/ca > bundle.pem
+
+Once you have the bundle.pem file, import it to your trusted certificates in the web browser.
 
 multi-homed network setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^
