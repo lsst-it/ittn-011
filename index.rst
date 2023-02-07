@@ -199,6 +199,7 @@ Disable iptables
 
 .. code-block:: bash
 
+   systemctl disable --now firewalld
    yum install -y iptables-services
    systemctl stop iptables
    systemctl disable iptables
@@ -298,6 +299,7 @@ Disable iptables
 
 .. code-block:: bash
 
+   systemctl disable --now firewalld
    yum install -y iptables-services
    systemctl stop iptables
    systemctl disable iptables
@@ -372,8 +374,6 @@ BDC:
 
 .. code-block:: bash
 
-   #CORE1
-   systemctl disable --now firewalld
    FOREMAN_IP="139.229.135.5"
    DHCP_RANGE="139.229.135.192 139.229.135.253"
    DHCP_GATEWAY="139.229.135.254"
@@ -401,7 +401,6 @@ BDC:
      --enable-foreman-plugin-remote-execution \
      --enable-foreman-plugin-dhcp-browser \
      --enable-foreman-proxy-plugin-remote-execution-ssh
-   virsh autostart foreman
 
 
 multi-homed network setup
