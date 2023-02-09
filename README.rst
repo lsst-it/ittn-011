@@ -1,7 +1,8 @@
 .. image:: https://img.shields.io/badge/ittn--011-lsst.io-brightgreen.svg
    :target: https://ittn-011.lsst.io
-.. image:: https://travis-ci.com/LSST-IT/ittn-011.svg
-   :target: https://travis-ci.com/LSST-IT/ittn-011
+.. image:: https://github.com/lsst-it/workflows/CI/badge.svg
+   :target: https://github.com/lsst-it/ittn-011/actions/
+..
 ..
   Uncomment this section and modify the DOI strings to include a Zenodo DOI badge in the README
   .. image:: https://zenodo.org/badge/doi/10.5281/zenodo.#####.svg
@@ -21,7 +22,7 @@ Bootstrapping the Deployment Platform
 - Publication URL: https://ittn-011.lsst.io
 - Alternative editions: https://ittn-011.lsst.io/v
 - GitHub repository: https://github.com/LSST-IT/ittn-011
-- Build system: https://travis-ci.com/LSST-IT/ittn-011
+- Build system: https://github.com/lsst-it/ittn-011/actions/
 
 
 Build this technical note
