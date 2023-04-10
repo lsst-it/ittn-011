@@ -2,18 +2,10 @@
 
 .. Please do not modify tocdepth; will be fixed when a new Sphinx theme is shipped.
 
-.. note::
-
-   **This technote is not yet published.**
-
-   Bootstrapping the Deployment Platform
-
 .. sectnum::
 
 Introduction
 ============
-
-.. TODO
 
 This document was originally populated based on the Tucson core deployment, and
 was fully expanded and verified in the Base DC deployment.
@@ -22,7 +14,7 @@ Requirements
 ============
 
 Networking
-^^^^^^^^^^
+----------
 
 The following networks are required:
 
@@ -47,7 +39,7 @@ Hosts
 =====
 
 Prepare host hardware
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Boot up all core nodes and perform the following configuration changes.
 
@@ -74,7 +66,7 @@ core1 hypervisor host
    sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
 
 Install OS on core1
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Install Centos from USB thumbdrive.
 
@@ -94,7 +86,7 @@ pass vlans directly to VMs.  Unintentional filtering should be avoided on this
 interface.
 
 Configure networking
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Configure the host management interface.
 
@@ -194,7 +186,7 @@ The resulting ifcfg scripts should resemble the following:
    PEERNTP="no"
 
 Disable SELinux
-^^^^^^^^^^^^^^^
+---------------
 
 .. code-block:: bash
 
@@ -203,17 +195,18 @@ Disable SELinux
    systemctl kexec
 
 Disable iptables
-^^^^^^^^^^^^^^^^
+----------------
 
 .. code-block:: bash
 
+   systemctl disable --now firewalld
    yum install -y iptables-services
    systemctl stop iptables
    systemctl disable iptables
    iptables -F
 
 Create a dedicated volume for VM images
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------
 
 .. code-block:: bash
 
@@ -241,7 +234,7 @@ Create a dedicated volume for VM images
   chmod 1777 /vm
 
 Install libvirt + extra tools
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------
 
 .. TODO figure out how to install with VNC instead of SPICE console to play
    nice[r] with foreman console redirection
@@ -273,7 +266,7 @@ Install libvirt + extra tools
   sudo usermod --append --groups libvirt jhoblit
 
 Create foreman/puppet VM
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 .. code-block:: bash
 
@@ -306,22 +299,38 @@ Disable iptables
 
 .. code-block:: bash
 
+   systemctl disable --now firewalld
    yum install -y iptables-services
    systemctl stop iptables
    systemctl disable iptables
    iptables -F
 
-install foreman
+Install Foreman
 ^^^^^^^^^^^^^^^
 
+### EL7
+
 .. code-block:: bash
+
    FOREMAN_VERSION="1.24"
    sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
    sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
    sudo yum -y install https://yum.theforeman.org/releases/"${FOREMAN_VERSION}"/el7/x86_64/foreman-release.rpm
    sudo yum -y install foreman-installer
 
-TODO: collapse all plugin configuration into these calls, or properly document how we're adding plugins.
+### EL8
+
+.. code-block:: bash
+
+   FOREMAN_VERSION="3.2"
+   sudo yum -y install https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
+   sudo dnf module reset postgresql -y
+   sudo dnf module enable postgresql:12 -y
+   sudo dnf module reset ruby -y
+   sudo dnf module enable ruby:2.7 -y
+   sudo yum -y install https://yum.theforeman.org/releases/${FOREMAN_VERSION}/el8/x86_64/foreman-release.rpm
+   sudo yum -y install foreman-installer
+
 
 Tucson:
 
@@ -363,25 +372,10 @@ Cerro Pachon:
     --enable-foreman-plugin-dhcp-browser \
     --enable-foreman-proxy-plugin-remote-execution-ssh
 
-Foreman Console
-^^^^^^^^^^^^^^^
-Since we generated a self-signed certificate, you'll need to import it to the web browser you 
-are using - otherwise the Foreman remote console won't be able to connect.
-
-.. code-block:: bash
-
-  HOSTNAME="foreman.ls.lsst.org"
-  curl -k https://"${HOSTNAME}":8140/puppet-ca/v1/certificate/ca > bundle.pem
-
-Once you have the bundle.pem file, import it to your trusted certificates in the web browser.
-
-
 BDC:
 
 .. code-block:: bash
 
-   #CORE1
-   systemctl disable --now firewalld
    FOREMAN_IP="139.229.135.5"
    DHCP_RANGE="139.229.135.192 139.229.135.253"
    DHCP_GATEWAY="139.229.135.254"
@@ -409,11 +403,20 @@ BDC:
      --enable-foreman-plugin-remote-execution \
      --enable-foreman-plugin-dhcp-browser \
      --enable-foreman-proxy-plugin-remote-execution-ssh
-   virsh autostart foreman
 
+Foreman Console
+---------------
+Since we generated a self-signed certificate, you'll need to import it to the web browser you are using - otherwise the Foreman remote console won't be able to connect.
+
+.. code-block:: bash
+
+  HOSTNAME="foreman.ls.lsst.org"
+  curl -k https://"${HOSTNAME}":8140/puppet-ca/v1/certificate/ca > bundle.pem
+
+Once you have the bundle.pem file, import it to your trusted certificates in the web browser.
 
 multi-homed network setup
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 Only applies to VMs with multiple interfaces.
 
@@ -472,7 +475,7 @@ Only applies to VMs with multiple interfaces.
   200	foreman
 
 configure smart-proxy route53 plugin
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------
 
 Install route53 plugin
 
@@ -507,7 +510,7 @@ if DNS resolution is blocked by firewall, change this foreman setting (via
 foreman UI) to yes: ``Query local nameservers``
 
 configure smart-proxy isc bind plugin (if not configured by foreman-installer)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------------------------------------
 
 .. code-block:: yaml
 
@@ -548,7 +551,7 @@ configure smart-proxy isc bind plugin (if not configured by foreman-installer)
 
 
 setup foreman libvirt integration with core1
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------
 
 See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
 ##Should be puppetize in the near future
@@ -606,7 +609,7 @@ See https://theforeman.org/manuals/1.23/index.html#5.2.5LibvirtNotes
   virsh --connect qemu+ssh://foreman@core1.tuc.lsst.cloud/system list --all
 
 boot strap puppet agent on core1
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 .. code-block:: yaml
 
@@ -635,7 +638,7 @@ boot strap puppet agent on core1
   END
 
 Enable foreman-proxy bmc support
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 .. code-block:: yaml
 
@@ -653,7 +656,7 @@ Enable foreman-proxy bmc support
   systemctl restart foreman-proxy
 
 Install and configure r10k
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 .. code-block:: yaml
 
@@ -707,7 +710,7 @@ Foreman configuration
 =====================
 
 Global parameters
-^^^^^^^^^^^^^^^^^
+-----------------
 
 .. code-block:: bash
 
@@ -718,7 +721,7 @@ Global parameters
    hammer global-parameter set --name enable-puppetlabs-puppet6-repo --parameter-type boolean --value true
 
 Hostgroup dependencies
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 Generate domains, subnets, and other resources that will be associated with
 hosts and hostgroups.
@@ -795,7 +798,7 @@ TODO: provisioning template/operating system associations
      --config-template-id "$(hammer template info --name 'Kickstart default PXEGrub2' --fields id | awk '{ print $2 }')"
 
 Hostgroups
-^^^^^^^^^^
+----------
 
 Create hostgroups for the entire site (e.g. ``ls``) and the core group (e.g.
 ``ls/corels``). The group for the entire site is needed to set reasonable
@@ -827,7 +830,7 @@ provisioning defaults.
       --pxe-loader 'iPXE Embedded'
 
 Host classification
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Reclassify the foreman and core nodes.
 
@@ -837,7 +840,7 @@ Reclassify the foreman and core nodes.
    hammer host update --name core1.ls.lsst.org --parameters role=hypervisor --hostgroup-title ls/corels
 
 Adding hypervisors
-^^^^^^^^^^^^^^^^^^
+------------------
 
 Note that ``hammer compute-profile values update`` will fail for values that
 haven't been initialized.  A value must be already set from the www UI or via
@@ -870,7 +873,7 @@ haven't been initialized.  A value must be already set from the www UI or via
      --volume "pool_name=default,capacity=40G,allocation=0,format_type=raw"
 
 Foreman host discovery
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 See also: https://theforeman.org/plugins/foreman_discovery/14.0/index.html
 
