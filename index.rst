@@ -60,10 +60,12 @@ core1 hypervisor host
 
 .. Example given to indicate which version of CentOS we're deploying from.
 
+Example of preparing a USB thumbdrive to install the baremetal hypervisor.
+
 .. code-block:: bash
 
-   curl -O http://mirror.netglobalis.net/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
-   sudo dd if=CentOS-7-x86_64-Minimal-1908.iso of=/dev/sdXXX status=progress
+   curl -O https://repo.almalinux.org/almalinux/9.7/isos/x86_64/AlmaLinux-9.7-x86_64-minimal.iso
+   sudo dd if=AlmaLinux-9.7-x86_64-minimal.iso of=/dev/sdXXX status=progress
 
 Install OS on core1
 -------------------
@@ -270,17 +272,67 @@ Create foreman/puppet VM
 
 .. code-block:: bash
 
-   curl -O http://centos-distro.1gservers.com/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
-   VLAN=1800
+   cd /tmp
+   curl -O https://repo.almalinux.org/almalinux/9.7/isos/x86_64/AlmaLinux-9.7-x86_64-minimal.iso
+   VLAN=1101
    virt-install \
      --name=foreman \
      --vcpus=8 \
-     --ram=16384 \
-     --file-size=50 \
-     --os-type=linux \
-     --os-variant=rhel7 \
+     --ram=32768 \
+     --file-size=100 \
+     --os-variant=rhel9.7 \
+     --graphics vnc,listen=0.0.0.0,port=5905,password=lsst \
+     --noautoconsole \
      --network bridge=br${VLAN} \
-     --location=/tmp/CentOS-7-x86_64-Minimal-1908.iso
+     --location=/tmp/AlmaLinux-9.7-x86_64-minimal.iso
+
+Connect via VNC to complete the installation. Use the appropriate site specific
+default root password from 1pass.
+
+Enable ssh access to the VM
+----------------------------
+
+Connect to the VM via VNC. Login as root.
+
+Create a regular user account to for ssh.
+
+.. code-block:: bash
+
+   useradd -m -s /bin/bash -G wheel jhoblitt
+   passwd jhoblitt
+
+Verify that ssh access is working.
+
+.. code-block:: bash
+
+   unset SSH_AUTH_SOCK
+   ssh jhoblitt@<ip address of foreman VM>
+
+Verify that sudo to root is working.
+
+.. code-block:: bash
+
+   sudo -i
+
+Configure networking.
+
+.. code-block:: bash
+
+   sudo nmcli connection modify enp1s0 \
+     ipv4.addresses 139.229.134.5/24 \
+     ipv4.gateway 139.229.134.254 \
+     ipv4.dns "139.229.134.53 139.229.134.54 139.229.134.55" \
+     ipv4.method manual
+
+   sudo nmcli connection up enp1s0
+
+Verify that the host is on the correct IP address.
+
+.. code-block:: bash
+
+   unset SSH_AUTH_SOCK
+   ssh jhoblitt@<ip address of foreman VM>
+
 
 Foreman/puppet VM
 -----------------
@@ -291,8 +343,14 @@ Disable SELinux
 .. code-block:: bash
 
    sed -ie '/SELINUX=/s/=.*/=disabled/' /etc/selinux/config
-   # Perform a fast reboot - don't reinitialize the hardware.
-   systemctl kexec
+   reboot
+
+Verify SELinux is disabled.
+
+.. code-block:: bash
+
+   selinuxenabled
+   echo $?
 
 Disable iptables
 ^^^^^^^^^^^^^^^^
@@ -300,7 +358,7 @@ Disable iptables
 .. code-block:: bash
 
    systemctl disable --now firewalld
-   yum install -y iptables-services
+   dnf install -y iptables-services
    systemctl stop iptables
    systemctl disable iptables
    iptables -F
@@ -308,71 +366,113 @@ Disable iptables
 Install Foreman
 ^^^^^^^^^^^^^^^
 
-### EL7
+### EL9
 
 .. code-block:: bash
 
-   FOREMAN_VERSION="1.24"
-   sudo yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
-   sudo yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-   sudo yum -y install https://yum.theforeman.org/releases/"${FOREMAN_VERSION}"/el7/x86_64/foreman-release.rpm
-   sudo yum -y install foreman-installer
+   FOREMAN_VERSION="3.16"
+   sudo dnf -y install https://yum.puppet.com/puppet8-release-el-9.noarch.rpm
+   sudo dnf -y install https://yum.theforeman.org/releases/${FOREMAN_VERSION}/el9/x86_64/foreman-release.rpm
+   sudo dnf -y install foreman-installer
+   sudo dnf -y install rubygem-foreman_maintain
+   sudo dnf -y install foreman-vmware
 
-### EL8
-
-.. code-block:: bash
-
-   FOREMAN_VERSION="3.2"
-   sudo yum -y install https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
-   sudo dnf module reset postgresql -y
-   sudo dnf module enable postgresql:12 -y
-   sudo dnf module reset ruby -y
-   sudo dnf module enable ruby:2.7 -y
-   sudo yum -y install https://yum.theforeman.org/releases/${FOREMAN_VERSION}/el8/x86_64/foreman-release.rpm
-   sudo yum -y install foreman-installer
-
-
-Tucson:
+dev
+---
 
 .. code-block:: bash
 
-   foreman-installer \
+   FOREMAN_IP="139.229.134.5"
+   DHCP_RANGE="139.229.134.120 139.229.134.179"
+   DHCP_GATEWAY="139.229.134.254"
+   DHCP_NAMESERVERS="139.229.134.53"
+   DNS_ZONE="dev.lsst.org"
+   DNS_REVERSE_ZONE="134.229.139.in-addr.arpa"
+   DNS_FORWARDERS="139.229.134.53"
+   FOREMAN_URL="https://foreman.dev.lsst.org"
+   sudo foreman-installer \
      --enable-foreman-cli  \
      --enable-foreman-proxy \
      --foreman-proxy-tftp=true \
-     --foreman-proxy-tftp-servername=140.252.32.218 \
+     --foreman-proxy-tftp-servername="${FOREMAN_IP}" \
      --foreman-proxy-dhcp=true \
-     --foreman-proxy-dhcp-interface=eth1 \
-     --foreman-proxy-dhcp-gateway=10.0.100.1 \
-     --foreman-proxy-dhcp-nameservers="140.252.32.218" \
-     --foreman-proxy-dhcp-range="10.0.100.50 10.0.100.60" \
+     --foreman-proxy-dhcp-interface=enp1s0 \
+     --foreman-proxy-dhcp-gateway="${DHCP_GATEWAY}" \
+     --foreman-proxy-dhcp-nameservers="${DHCP_NAMESERVERS}" \
+     --foreman-proxy-dhcp-range="${DHCP_RANGE}" \
      --foreman-proxy-dns=true \
-     --foreman-proxy-dns-interface=eth0 \
-     --foreman-proxy-dns-zone=tuc.lsst.cloud \
-     --foreman-proxy-dns-reverse=100.0.10.in-addr.arpa \
-     --foreman-proxy-dns-forwarders=140.252.32.21 \
-     --foreman-proxy-foreman-base-url=https://foreman.tuc.lsst.cloud \
-     --enable-foreman-plugin-remote-execution \
-     --enable-foreman-plugin-dhcp-browser \
-     --enable-foreman-proxy-plugin-remote-execution-ssh
+     --foreman-proxy-dns-interface=enp1s0 \
+     --foreman-proxy-dns-zone="${DNS_ZONE}" \
+     --foreman-proxy-dns-reverse="${DNS_REVERSE_ZONE}" \
+     --foreman-proxy-dns-forwarders="${DNS_FORWARDERS}" \
+     --foreman-proxy-foreman-base-url="${FOREMAN_URL}" \
+     --enable-foreman-plugin-remote-execution
 
-Cerro Pachon:
+tu
+--
 
 .. code-block:: bash
 
-  foreman-installer \
-    --enable-foreman-cli \
-    --enable-foreman-proxy \
-    --foreman-proxy-tftp=true \
-    --foreman-proxy-tftp-servername=139.229.162.45 \
-    --foreman-proxy-dhcp=false \
-    --foreman-proxy-dns=false \
-    --foreman-proxy-foreman-base-url=https://foreman.cp.lsst.org \
-    --enable-foreman-plugin-remote-execution \
-    --enable-foreman-plugin-dhcp-browser \
-    --enable-foreman-proxy-plugin-remote-execution-ssh
+   FOREMAN_IP="140.252.146.80"
+   DHCP_RANGE="140.252.146.90 140.252.146.91"
+   DHCP_GATEWAY="140.252.146.254"
+   DHCP_NAMESERVERS="140.252.146.71"
+   DNS_ZONE="tu.lsst.org"
+   DNS_REVERSE_ZONE="146.252.146.in-addr.arpa"
+   DNS_FORWARDERS="140.252.146.71"
+   FOREMAN_URL="https://foreman.tuc.lsst.cloud"
 
-BDC:
+   sudo foreman-installer \
+     --enable-foreman-cli  \
+     --enable-foreman-proxy \
+     --foreman-proxy-tftp=true \
+     --foreman-proxy-tftp-servername="${FOREMAN_IP}" \
+     --foreman-proxy-dhcp=true \
+     --foreman-proxy-dhcp-interface=enp1s0 \
+     --foreman-proxy-dhcp-gateway="${DHCP_GATEWAY}" \
+     --foreman-proxy-dhcp-nameservers="${DHCP_NAMESERVERS}" \
+     --foreman-proxy-dhcp-range="${DHCP_RANGE}" \
+     --foreman-proxy-dns=true \
+     --foreman-proxy-dns-interface=enp1s0 \
+     --foreman-proxy-dns-zone="${DNS_ZONE}" \
+     --foreman-proxy-dns-reverse="${DNS_REVERSE_ZONE}" \
+     --foreman-proxy-dns-forwarders="${DNS_FORWARDERS}" \
+     --foreman-proxy-foreman-base-url="${FOREMAN_URL}" \
+     --enable-foreman-plugin-remote-execution
+
+cp
+--
+
+.. code-block:: bash
+
+   FOREMAN_IP="139.229.160.5"
+   DHCP_RANGE="139.229.160.192 139.229.160.253"
+   DHCP_GATEWAY="139.229.160.254"
+   DHCP_NAMESERVERS="139.229.160.53"
+   DNS_ZONE="cp.lsst.org"
+   DNS_REVERSE_ZONE="160.229.139.in-addr.arpa"
+   DNS_FORWARDERS="139.229.160.53"
+   FOREMAN_URL="https://foreman.cp.lsst.org"
+   sudo foreman-installer \
+     --enable-foreman-cli  \
+     --enable-foreman-proxy \
+     --foreman-proxy-tftp=true \
+     --foreman-proxy-tftp-servername="${FOREMAN_IP}" \
+     --foreman-proxy-dhcp=true \
+     --foreman-proxy-dhcp-interface=enp1s0 \
+     --foreman-proxy-dhcp-gateway="${DHCP_GATEWAY}" \
+     --foreman-proxy-dhcp-nameservers="${DHCP_NAMESERVERS}" \
+     --foreman-proxy-dhcp-range="${DHCP_RANGE}" \
+     --foreman-proxy-dns=true \
+     --foreman-proxy-dns-interface=enp1s0 \
+     --foreman-proxy-dns-zone="${DNS_ZONE}" \
+     --foreman-proxy-dns-reverse="${DNS_REVERSE_ZONE}" \
+     --foreman-proxy-dns-forwarders="${DNS_FORWARDERS}" \
+     --foreman-proxy-foreman-base-url="${FOREMAN_URL}" \
+     --enable-foreman-plugin-remote-execution
+
+ls
+--
 
 .. code-block:: bash
 
@@ -390,19 +490,17 @@ BDC:
      --foreman-proxy-tftp=true \
      --foreman-proxy-tftp-servername="${FOREMAN_IP}" \
      --foreman-proxy-dhcp=true \
-     --foreman-proxy-dhcp-interface=eth0 \
+     --foreman-proxy-dhcp-interface=enp1s0 \
      --foreman-proxy-dhcp-gateway="${DHCP_GATEWAY}" \
      --foreman-proxy-dhcp-nameservers="${DHCP_NAMESERVERS}" \
      --foreman-proxy-dhcp-range="${DHCP_RANGE}" \
      --foreman-proxy-dns=true \
-     --foreman-proxy-dns-interface=eth0 \
+     --foreman-proxy-dns-interface=enp1s0 \
      --foreman-proxy-dns-zone="${DNS_ZONE}" \
      --foreman-proxy-dns-reverse="${DNS_REVERSE_ZONE}" \
      --foreman-proxy-dns-forwarders="${DNS_FORWARDERS}" \
      --foreman-proxy-foreman-base-url="${FOREMAN_URL}" \
-     --enable-foreman-plugin-remote-execution \
-     --enable-foreman-plugin-dhcp-browser \
-     --enable-foreman-proxy-plugin-remote-execution-ssh
+     --enable-foreman-plugin-remote-execution
 
 Foreman Console
 ---------------
